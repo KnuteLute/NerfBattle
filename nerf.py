@@ -1,17 +1,25 @@
-from dash import Dash, html, dcc, Input, Output, State, callback
+from dash import Dash, html, dcc, Input, Output, State, callback, ALL
 import dash
 import random
 import os
 import json
 import dash_mantine_components as dmc
 import numpy as np
+import time
 
 filename = 'nerffight.json'
 
 
 def load_data(filename):
-    with open(filename, 'r') as file:
-        data = json.load(file)
+    try:
+        with open('nerffight.json', 'r') as f:
+            data = json.load(f)
+            if 'side' not in data or 'players' not in data:
+                time.sleep(1)
+                print("sleep")
+                load_data(filename)
+    except json.JSONDecodeError:
+        data = {}  # or set to a default value
     return data
 
 
@@ -89,6 +97,15 @@ def add_team_score(side, team):
     save_data('nerffight.json', data)
 
 
+def load_guns():
+    data = load_data('nerffight.json')
+    guns = []
+    for gun in data['guns']:
+        guns.append(gun)
+
+    return guns
+
+
 def reset_data():
     # Load the data
     data = load_data('nerffight.json')
@@ -149,16 +166,45 @@ app.layout = html.Div(children=[
         ),
     ),
 
-    dmc.Grid(
+    dmc.Grid([
+        dmc.Col(
+            children=[
+
+            ], span=6,
+            id='scoreboard'
+        ),
         dmc.Col(
             children=[
 
             ],
-            id='scoreboard'
+            id='gun_choice',
+            span=6,
         ),
-    ),
-    dcc.Graph(id='win-histogram'),
-    dcc.Graph(id='game-history-graph'),
+        dmc.Col(
+            children=[
+                dcc.Graph(id='win-histogram'),
+            ], span=12,
+        ),
+
+    ]),
+
+
+
+    # Column for the game history graph
+
+    dmc.Grid([
+        # Column for the game history graph
+        dmc.Col([
+            dcc.Graph(id='game-history-graph'),
+        ], span=6),  # Set the width to 6 (out of 12) for a 50% width column
+
+        # Column for the donut chart
+        dmc.Col([
+            dcc.Graph(id='donut-chart'),
+        ], span=6),  # Set the width to 6 (out of 12) for a 50% width column
+    ]),  # Set the width to 6 (out of 12) for a 50% width column
+
+
     # Buttons for team wins
 
     dcc.Store(id='team', storage_type='session'),
@@ -271,15 +317,18 @@ def team_wins(n_clicks_long, long_wins, teams):
 @app.callback(
     Output('scoreboard', 'children'),
     Input('team', 'data'),
+    Input('island-wins-button', 'n_clicks'),
+    Input('long-wins-button', 'n_clicks'),
     State('long-team-win', 'data'),
     State('island-team-win', 'data'),
     prevent_initial_call=True
 )
-def display_teams(teams, init_long, init_island):
+def display_teams(teams, islandclick, longclick, init_long, init_island):
     if teams is None:
         return dash.no_update
     else:
         # Load the data from the JSON file
+        time.sleep(0.2)
         data = load_data('nerffight.json')
 
         # Create a list to hold the scoreboard children
@@ -302,13 +351,16 @@ def display_teams(teams, init_long, init_island):
 @app.callback(
     Output('win-histogram', 'figure'),
     Input('team', 'data'),  # Trigger the callback whenever the team data is updated
+    Input('island-wins-button', 'n_clicks'),
+    Input('long-wins-button', 'n_clicks'),
     prevent_initial_call=True
 )
-def update_histogram(teams):
+def update_histogram(teams, islandclikc, longclick):
     if teams is None:
         return dash.no_update
     else:
         # Load the data from the JSON file
+        time.sleep(0.2)
         data = load_data('nerffight.json')
 
         # Create a list of player names and their number of wins
@@ -335,13 +387,16 @@ def update_histogram(teams):
 @app.callback(
     Output('game-history-graph', 'figure'),
     Input('team', 'data'),  # Trigger the callback whenever the team data is updated
+    Input('island-wins-button', 'n_clicks'),
+    Input('long-wins-button', 'n_clicks'),
     prevent_initial_call=True
 )
-def update_game_history_graph(teams):
+def update_game_history_graph(teams, islandclick, longclick):
     if teams is None:
         return dash.no_update
     else:
         # Load the data from the JSON file
+        time.sleep(0.2)
         data = load_data('nerffight.json')
 
         # Create a trace for each side
@@ -370,6 +425,100 @@ def update_game_history_graph(teams):
         }
 
         return figure
+
+
+# Callback for updating the donut chart
+@app.callback(
+    Output('donut-chart', 'figure'),
+    Input('team', 'data'),  # Trigger the callback whenever the team data is updated
+    Input('island-wins-button', 'n_clicks'),
+    Input('long-wins-button', 'n_clicks'),
+    prevent_initial_call=True
+)
+def update_donut_chart(teams, islandclikc, longclick):
+    if teams is None:
+        return dash.no_update
+    else:
+        # Load the data from the JSON file
+        time.sleep(0.2)
+        data = load_data('nerffight.json')
+
+        # Create a list of side names and their number of wins
+        side_names = list(data['side'].keys())
+        side_wins = [side_data['side_win'] for side_data in data['side'].values()]
+
+        # Create a donut chart using Plotly
+        figure = {
+            'data': [{
+                'type': 'pie',
+                'labels': side_names,
+                'values': side_wins,
+                'hole': .4,  # This creates the hole in the middle of the pie chart
+            }],
+            'layout': {
+                'title': 'Side Wins',
+            },
+        }
+
+        return figure
+
+
+@callback(
+    Output('gun_choice', 'children'),
+    Input('team', 'data'),
+)
+def guns_for_players(team):
+    # Load the data from the JSON file
+    data = load_data('nerffight.json')
+    players = []
+    for sides in team:
+        for player in sides:
+            players.append(player)
+
+    # Define the list of guns
+    guns = load_guns()
+    # Generate a dropdown for each player
+    player_dropdowns = []
+    for player in players:
+        dropdown = dmc.Select(
+            label=player,
+            placeholder="Select a gun",
+            id={'type': 'player-gun-dropdown', 'index': player},
+            data=[{'value': gun, 'label': gun} for gun in guns],
+            style={"width": 200, "marginBottom": 10},
+        )
+        player_dropdowns.append(dropdown)
+
+    # Create the layout with these dropdowns
+    layout = html.Div(player_dropdowns)
+
+    return layout
+
+
+@app.callback(
+    Output('dummy-output', 'children'),
+    [
+        Input({'type': 'player-gun-dropdown', 'index': ALL}, 'value'),
+        State('team', 'data'),
+    ],
+    prevent_initial_call=True
+)
+def update_player_guns(gun_values, team):
+    # Load the data from the JSON file
+    data = load_data('nerffight.json')
+    players = []
+    for sides in team:
+        for player in sides:
+            players.append(player)
+
+    # Update the gun for each player
+    for player, gun in zip(players, gun_values):
+        data['players'][player]['gun'].append(gun)
+
+    # Save the updated data back to the JSON file
+    #save_data('nerffight.json', data)
+
+    return ''
 
 
 # Run the application
