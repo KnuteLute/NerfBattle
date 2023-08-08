@@ -16,7 +16,7 @@ def load_data(filename):
             data = json.load(f)
             if 'side' not in data or 'players' not in data:
                 time.sleep(1)
-                print("sleep")
+                
                 load_data(filename)
     except json.JSONDecodeError:
         data = {}  # or set to a default value
@@ -109,10 +109,20 @@ def load_guns():
 def give_player_gun(player_gun):
     # player_gun is a list where everyother element is either a player or a gun. # ex: [player, gun, player, gun]
     data = load_data('nerffight.json')
-    for i in range(0, len(player_gun), 2):
+    increment = 1
+    while increment/2 <= len(player_gun)/2:
         for player in data['players']:
-            if player == player_gun[i]:
-                print(player, player_gun[i])
+            if player == player_gun[increment-1]:
+                player_data = data['players'][player]
+                game_number = data['game']['game']
+                gun_info = data['guns'][player_gun[increment]]
+                if 'game_gun' not in player_data:
+                    player_data['game_gun'] = []
+                
+                player_data['game_gun'].append({'gun_name' : [player_gun[increment]], 'gun': gun_info, 'game': game_number})
+                save_data('nerffight.json', data)
+        increment += 2
+        
 
 
 def reset_data():
@@ -337,14 +347,16 @@ def display_teams(teams):
     Input('island-wins-button', 'n_clicks'),
     State('island-team-win', 'data'),
     State('team', 'data'),
+    State('dummy-output', 'data'),
     prevent_initial_call=True
 )
-def team_wins(n_clicks_island, island_wins, teams):
+def team_wins(n_clicks_island, island_wins, teams, player_gun):
     if island_wins == None:
         island_wins = 0
     island_wins += 1
     add_team_score(1, teams)
     add_side_score(1)
+    give_player_gun(player_gun)
 
     return island_wins
 
@@ -354,14 +366,15 @@ def team_wins(n_clicks_island, island_wins, teams):
     Input('long-wins-button', 'n_clicks'),
     State('long-team-win', 'data'),
     State('team', 'data'),
+    State('dummy-output', 'data'),
     prevent_initial_call=True
 )
-def team_wins(n_clicks_long, long_wins, teams):
+def team_wins(n_clicks_long, long_wins, teams, player_gun):
     if long_wins == None:
         long_wins = 0
-    # print(n_clicks_long)
     add_side_score(0)
     add_team_score(0, teams)
+    give_player_gun(player_gun)
 
     long_wins += 1
     return long_wins
@@ -549,7 +562,7 @@ def guns_for_players(team):
 
 
 @app.callback(
-    Output('dummy-output', 'children'),
+    Output('dummy-output', 'data'),
     [
         Input({'type': 'player-gun-dropdown', 'index': ALL}, 'value'),
         State('team', 'data'),
@@ -569,14 +582,7 @@ def update_player_guns(gun_values, team):
         if gun:
             player_guns.append(player)
             player_guns.append(gun)
-    # Update the gun for each player
-    '''for player, gun in zip(players, gun_values):
-        data['players'][player]['gun'].append(gun)'''
-
-    # Save the updated data back to the JSON file
-    #save_data('nerffight.json', data)
-    children = [html.H1(player_guns)]
-    return children
+    return player_guns
 
 
 # Run the application
