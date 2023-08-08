@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, Input, Output, State, callback, ALL
+from dash import Dash, html, dcc, Input, Output, State, callback, ALL, ctx
 import dash
 import random
 import os
@@ -161,7 +161,21 @@ app.layout = html.Div(children=[
     ),
 
     # Button for creating a game
-    dmc.Button('Make Game', id='make-game-button'),
+    dmc.Grid([
+        dmc.Col(
+            children=[
+                dmc.Button('MakeGame', id='make-game-button'),
+            ], span=3,
+        ),
+        dmc.Col(
+            children=[
+                dmc.Button('Filp Side', id='flip-side-button'),
+            ],
+            span=6,
+        ),
+
+    ]),
+    
 
     # Div for displaying the teams
     html.Div(id='teams-display'),
@@ -250,11 +264,13 @@ def add_player_to_file(n_clicks, player_name):
 @app.callback(
     Output('team', 'data'),
     Input('make-game-button', 'n_clicks'),
+    Input('flip-side-button','n_clicks'),
     State('player-dropdown', 'value'),
     prevent_initial_call=True
 )
-def make_game(n_clicks, selected_players):
-    if n_clicks > 0:
+def make_game(make_game, flip_side, selected_players):
+    button_id = ctx.triggered_id if not None else 'No clicks yet'
+    if button_id == "make-game-button":
         random.shuffle(selected_players)
         num_players = len(selected_players)
         half = num_players // 2
@@ -269,7 +285,30 @@ def make_game(n_clicks, selected_players):
 
         return [team_long, team_islands]
 
+    if button_id == "flip-side-button":
 
+        team_long = []
+        team_islands = []
+
+        data = load_data('nerffight.json')
+        target_game = data['game']['game']
+        players_in_target_game = []
+        players_side_in_game = []
+        for player, player_data in data['players'].items():
+            for game_history in player_data['game_history']:
+                if game_history[-1] == target_game:
+                    players_in_target_game.append(player)
+                    players_side_in_game.append(player_data['game_history'][-1][0])
+                    break 
+        
+        for player, side in zip(players_in_target_game, players_side_in_game):
+            
+            if side == 0 or side == 1:
+                team_islands.append(player)
+            else:
+                team_long.append(player)
+
+        return [team_long, team_islands]
 @app.callback(
     Output('teams-display', 'children'),
     Input('team', 'data'),
@@ -542,4 +581,4 @@ def update_player_guns(gun_values, team):
 
 # Run the application
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8060)
+    app.run_server(debug=True, port=8070)
