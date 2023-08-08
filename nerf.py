@@ -106,6 +106,15 @@ def load_guns():
     return guns
 
 
+def give_player_gun(player_gun):
+    # player_gun is a list where everyother element is either a player or a gun. # ex: [player, gun, player, gun]
+    data = load_data('nerffight.json')
+    for i in range(0, len(player_gun), 2):
+        for player in data['players']:
+            if player == player_gun[i]:
+                print(player, player_gun[i])
+
+
 def reset_data():
     # Load the data
     data = load_data('nerffight.json')
@@ -202,9 +211,14 @@ app.layout = html.Div(children=[
         dmc.Col([
             dcc.Graph(id='donut-chart'),
         ], span=6),  # Set the width to 6 (out of 12) for a 50% width column
+        dmc.Col(
+            children=[
+
+            ], id='dummy-output'
+        )
     ]),  # Set the width to 6 (out of 12) for a 50% width column
 
-
+    
     # Buttons for team wins
 
     dcc.Store(id='team', storage_type='session'),
@@ -511,14 +525,19 @@ def update_player_guns(gun_values, team):
         for player in sides:
             players.append(player)
 
-    # Update the gun for each player
+    player_guns = []
     for player, gun in zip(players, gun_values):
-        data['players'][player]['gun'].append(gun)
+        if gun:
+            player_guns.append(player)
+            player_guns.append(gun)
+    # Update the gun for each player
+    '''for player, gun in zip(players, gun_values):
+        data['players'][player]['gun'].append(gun)'''
 
     # Save the updated data back to the JSON file
     #save_data('nerffight.json', data)
-
-    return ''
+    children = [html.H1(player_guns)]
+    return children
 
 
 # Run the application
