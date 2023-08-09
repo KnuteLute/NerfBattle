@@ -6,6 +6,8 @@ import json
 import dash_mantine_components as dmc
 import numpy as np
 import time
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 
 filename = 'nerffight.json'
 
@@ -153,103 +155,124 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 # Define the layout of the application
 # Define the layout of the application
-app.layout = html.Div(children=[
+app.layout = html.Div(
+    children=[
+        dmc.Grid([
+            dmc.Col([                
+                html.H1(children='Nerf Scoreboard'),
+                html.P(children='Welcome to the Nerf Scoreboard! Here you can keep track of player scores and game statistics.'),
 
-    html.H1(children='Nerf Scoreboard'),
-    html.P(children='Welcome to the Nerf Scoreboard! Here you can keep track of player scores and game statistics.'),
+                # Input for adding a player
+                dcc.Input(id='player-input', type='text', placeholder='Enter a player name...'),
+                html.Button('Add Player', id='add-player-button', n_clicks=0),
 
-    # Input for adding a player
-    dcc.Input(id='player-input', type='text', placeholder='Enter a player name...'),
-    html.Button('Add Player', id='add-player-button', n_clicks=0),
+                # Dropdown for selecting players
+                dcc.Dropdown(
+                    id='player-dropdown',
+                    options=[{'label': i, 'value': i} for i in players],
+                    multi=True,
+                    placeholder="Select players...",
+                ),
 
-    # Dropdown for selecting players
-    dcc.Dropdown(
-        id='player-dropdown',
-        options=[{'label': i, 'value': i} for i in players],
-        multi=True,
-        placeholder="Select players...",
-    ),
+                # Button for creating a game
+                dmc.Grid([
+                    dmc.Col(
+                        children=[
+                            dmc.Button('MakeGame', id='make-game-button',style={'background-color': 'green', 'color': 'white'}),
+                        ], span=3,
+                    ),
+                    dmc.Col(
+                        children=[
+                            dmc.Button('Filp Side', id='flip-side-button',style={'background-color': 'orange', 'color': 'white'}),
+                        ],
+                        span=6,
+                    ),
+                    dmc.Col(
+                        children=[
+                            html.Div(id='teams-display'),
+                        ],
+                        span=6,
+                    ),
+                    dmc.Col(
+                        children=[
+                            dmc.Button('Island Wins', id='island-wins-button',style={'background-color': 'orange', 'color': 'white'}),
+                            dmc.Button('Long Wins', id='long-wins-button',style={'background-color': 'blue', 'color': 'white'}),
+                        ],
+                        id='winning-button'
+                    ),
+                ]),
+            ],span=6),
+            dmc.Col([
+                # Div for displaying the teams
+                dmc.Grid([
+                    dmc.Col(
+                        children=[
 
-    # Button for creating a game
-    dmc.Grid([
-        dmc.Col(
-            children=[
-                dmc.Button('MakeGame', id='make-game-button'),
-            ], span=3,
-        ),
-        dmc.Col(
-            children=[
-                dmc.Button('Filp Side', id='flip-side-button'),
-            ],
-            span=6,
-        ),
+                        ], span=6,
+                        id='scoreboard'
+                    ),
+                    dmc.Col(
+                        children=[
 
-    ]),
-    
+                        ],
+                        id='gun_choice',
+                        span=6,
+                    ),
+                    
 
-    # Div for displaying the teams
-    html.Div(id='teams-display'),
-    dmc.Grid(
-        dmc.Col(
-            children=[
-                dmc.Button('Island Wins', id='island-wins-button'),
-                dmc.Button('Long Wins', id='long-wins-button'),
-            ],
-            id='winning-button'
-        ),
-    ),
+                ]),
+            ],span=6),
 
-    dmc.Grid([
-        dmc.Col(
-            children=[
+            dmc.Col([
+                # Column for the game history graph
 
-            ], span=6,
-            id='scoreboard'
-        ),
-        dmc.Col(
-            children=[
+                dmc.Grid([
+                    dmc.Col(
+                        children=[
+                            dcc.Graph(id='win-histogram'),
+                        ], span=12,
+                    ),
+                    dmc.Col(
+                        children=[
+                            dcc.Graph(id='player_donut-chart'),
+                        ], span=12,
+                        style={
+                            'margin-bottom': '0px',
+                        }  # Adjust the value as needed
+                    ),
+                    dmc.Col(
+                        children=[
+                            dcc.Graph(id='player_side_donut-chart'),
+                        ], span=12,
+                        style={
+                            'margin-top': '0px',
+                        }  # Adjust the value as needed
+                    ),
+                    # Column for the game history graph
+                    dmc.Col([
+                        dcc.Graph(id='game-history-graph'),
+                    ], span=6),  # Set the width to 6 (out of 12) for a 50% width column
 
-            ],
-            id='gun_choice',
-            span=6,
-        ),
-        dmc.Col(
-            children=[
-                dcc.Graph(id='win-histogram'),
-            ], span=12,
-        ),
+                    # Column for the donut chart
+                    dmc.Col([
+                        dcc.Graph(id='donut-chart'),
+                    ], span=6),  # Set the width to 6 (out of 12) for a 50% width column
+                    dmc.Col(
+                        children=[
 
-    ]),
+                        ], id='dummy-output'
+                    )
+                ]),  # Set the width to 6 (out of 12) for a 50% width column
+            ],span=12),
+            
+            # Buttons for team wins
 
-
-
-    # Column for the game history graph
-
-    dmc.Grid([
-        # Column for the game history graph
-        dmc.Col([
-            dcc.Graph(id='game-history-graph'),
-        ], span=6),  # Set the width to 6 (out of 12) for a 50% width column
-
-        # Column for the donut chart
-        dmc.Col([
-            dcc.Graph(id='donut-chart'),
-        ], span=6),  # Set the width to 6 (out of 12) for a 50% width column
-        dmc.Col(
-            children=[
-
-            ], id='dummy-output'
-        )
-    ]),  # Set the width to 6 (out of 12) for a 50% width column
-
-    
-    # Buttons for team wins
-
-    dcc.Store(id='team', storage_type='session'),
-    dcc.Store(id='island-team-win', storage_type='session'),
-    dcc.Store(id='long-team-win', storage_type='session'),
-
-])
+            dcc.Store(id='team', storage_type='session'),
+            dcc.Store(id='island-team-win', storage_type='session'),
+            dcc.Store(id='long-team-win', storage_type='session'),
+        ])
+    ]
+)
 
 
 # Callback for the 'Add Player' button click event
@@ -332,10 +355,10 @@ def display_teams(teams):
         team_islands = teams[1]
         if team_long and team_islands:
             return html.Div([
-                html.H2('Long:'),
-                html.P(', '.join(team_long)),
-                html.H2('Islands:'),
-                html.P(', '.join(team_islands)),
+                html.H1('Long:', style={'color': 'blue'}),
+                html.H2(', '.join(team_long), style={'color': 'blue'}),
+                html.H1('Islands:', style={'color': 'orange'}),
+                html.H2(', '.join(team_islands),style={'color': 'orange'}),
             ])
         else:
             return None
@@ -405,11 +428,11 @@ def display_teams(teams, islandclick, longclick, init_long, init_island):
 
         # Add player scores to the scoreboard
         for player, player_data in data['players'].items():
-            children.append(html.P(f"{player}: {player_data['games_won']} wins"))
+            children.append(html.P(f"{player}: {player_data['games_won']} wins", style={'margin': '1px'}))
 
         # Add side scores to the scoreboard
         for side, side_data in data['side'].items():
-            children.append(html.P(f"{side.capitalize()}: {side_data['side_win']} wins"))
+            children.append(html.P(f"{side.capitalize()}: {side_data['side_win']} wins", style={'margin': '1px'}))
 
         return children
 
@@ -584,6 +607,94 @@ def update_player_guns(gun_values, team):
             player_guns.append(gun)
     return player_guns
 
+
+@app.callback(
+    Output('player_donut-chart', 'figure'),
+    Input('team', 'data'),  # Trigger the callback whenever the team data is updated
+    Input('island-wins-button', 'n_clicks'),
+    Input('long-wins-button', 'n_clicks'),
+    prevent_initial_call=True
+)
+def update_player_donut_chart(teams, islandclikc, longclick):
+    if teams is None:
+        return dash.no_update
+    else:
+        # Load the data from the JSON file
+        time.sleep(0.2)
+        data = load_data('nerffight.json')
+        players = data['players'].keys()
+        players = list(players)
+        player_amount = len(players)
+        print('player amount',player_amount)
+        print((players))
+        fig = make_subplots(rows=1, cols=player_amount, subplot_titles=players, specs=[[{'type': 'domain'}]*player_amount])
+        for i, player in enumerate(players, start=1):
+            wins = data['players'][player]['games_won']
+            losses = data['players'][player]['games_played'] - wins
+            values = [wins, losses]
+            
+            # Define colors for wins and losses
+            colors = ['green', 'red']
+
+            fig.add_trace(go.Pie(labels=['Wins','Loss'], values=values, marker=dict(colors=colors)), row=1, col=i)
+        
+        fig.update_layout(height=300)
+        return fig
+
+
+@app.callback(
+    Output('player_side_donut-chart', 'figure'),
+    Input('team', 'data'),  # Trigger the callback whenever the team data is updated
+    Input('island-wins-button', 'n_clicks'),
+    Input('long-wins-button', 'n_clicks'),
+    prevent_initial_call=True
+)
+def update_player_side_donut_chart(teams, islandclikc, longclick):
+    if teams is None:
+        return dash.no_update
+    else:
+        # Load the data from the JSON file
+        time.sleep(0.2)
+        data = load_data('nerffight.json')
+        players = data['players'].keys()
+        players = list(players)
+        player_amount = len(players)
+        print('player amount',player_amount)
+        print((players))
+        subplot_titles = []
+
+        for player in players:
+            subplot_titles.append('')
+            subplot_titles.append(player)
+            
+
+        fig = make_subplots(rows=1, cols=player_amount*2, subplot_titles=subplot_titles, specs=[[{'type': 'domain'}]*player_amount*2])
+        for i, player in enumerate(players, start=1):
+            long = 0
+            long_loss = 0
+            islands = 0
+            island_loss = 0
+            for score, game in data['players'][player]['game_history']:
+                if score == 0:
+                    long += 1
+                if score == 1:
+                    long_loss += 1
+                if score == 2:
+                    islands += 1
+                if score == 3:
+                    island_loss += 1
+                i
+            values = [long, long_loss]
+            # Define colors for wins and losses
+            colors = ['green', 'red']
+            fig.add_trace(go.Pie(labels=['LongWin','LongLoss'], values=values, marker=dict(colors=colors)), row=1, col=i+i-1)
+            values = [islands, island_loss]
+            # Define colors for wins and losses
+            colors = ['yellow', 'purple']
+            fig.add_trace(go.Pie(labels=['IslandsWin','IslandsLoss'], values=values, marker=dict(colors=colors)), row=1, col=i+i)
+            
+        fig.update_layout(height=400)
+        return fig
 
 # Run the application
 if __name__ == '__main__':
