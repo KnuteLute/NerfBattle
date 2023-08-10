@@ -284,11 +284,17 @@ def make_game(make_game, flip_side, selected_players):
         random.shuffle(selected_players)
         num_players = len(selected_players)
         half = num_players // 2
-
+        numberlist = []
+        for n in range(100):
+            numberlist.append(n)
         # If there's an odd number of players, randomly add the extra player to 'long' or 'islands'
         if num_players % 2 == 1:
-            extra = random.choice([0, 1])
-            half += extra
+            extra = random.choice(numberlist)
+            if extra < 50:
+                half += 1
+            else:
+                half = half
+            
 
         team_long = selected_players[:half]
         team_islands = selected_players[half:]

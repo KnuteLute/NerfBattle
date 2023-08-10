@@ -1,8 +1,8 @@
 {
   "players": {
     "B\u00f8nna": {
-      "games_played": 5,
-      "games_won": 1,
+      "games_played": 9,
+      "games_won": 5,
       "game_history": [
         [
           3,
@@ -23,12 +23,28 @@
         [
           1,
           5
+        ],
+        [
+          0,
+          9
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          0,
+          12
         ]
       ]
     },
     "KnutKnut": {
-      "games_played": 8,
-      "games_won": 4,
+      "games_played": 14,
+      "games_won": 6,
       "game_history": [
         [
           0,
@@ -61,12 +77,36 @@
         [
           2,
           8
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          1,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          0,
+          13
+        ],
+        [
+          2,
+          14
         ]
       ]
     },
     "Tob": {
-      "games_played": 8,
-      "games_won": 6,
+      "games_played": 14,
+      "games_won": 8,
       "game_history": [
         [
           0,
@@ -99,12 +139,36 @@
         [
           2,
           8
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          0,
+          12
+        ],
+        [
+          3,
+          13
+        ],
+        [
+          1,
+          14
         ]
       ]
     },
     "Dre": {
-      "games_played": 8,
-      "games_won": 4,
+      "games_played": 14,
+      "games_won": 8,
       "game_history": [
         [
           3,
@@ -137,17 +201,66 @@
         [
           2,
           8
+        ],
+        [
+          0,
+          9
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          0,
+          12
+        ],
+        [
+          3,
+          13
+        ],
+        [
+          1,
+          14
         ]
       ]
     },
     "Kl\u00f8lla": {
-      "games_played": 0,
-      "games_won": 0,
-      "game_history": []
+      "games_played": 6,
+      "games_won": 4,
+      "game_history": [
+        [
+          0,
+          9
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          1,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          0,
+          13
+        ],
+        [
+          2,
+          14
+        ]
+      ]
     },
     "Mr. K": {
-      "games_played": 8,
-      "games_won": 6,
+      "games_played": 12,
+      "games_won": 8,
       "game_history": [
         [
           0,
@@ -180,6 +293,22 @@
         [
           1,
           8
+        ],
+        [
+          1,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          0,
+          13
+        ],
+        [
+          2,
+          14
         ]
       ]
     },
@@ -222,8 +351,8 @@
       ]
     },
     "TJ": {
-      "games_played": 8,
-      "games_won": 3,
+      "games_played": 14,
+      "games_won": 7,
       "game_history": [
         [
           0,
@@ -256,12 +385,36 @@
         [
           1,
           8
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          0,
+          12
+        ],
+        [
+          0,
+          13
+        ],
+        [
+          2,
+          14
         ]
       ]
     },
     "Rui": {
-      "games_played": 8,
-      "games_won": 4,
+      "games_played": 14,
+      "games_won": 6,
       "game_history": [
         [
           3,
@@ -294,13 +447,141 @@
         [
           2,
           8
+        ],
+        [
+          0,
+          9
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          1,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          3,
+          13
+        ],
+        [
+          1,
+          14
+        ]
+      ]
+    },
+    "Biffen": {
+      "games_played": 6,
+      "games_won": 2,
+      "game_history": [
+        [
+          3,
+          9
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          1,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          0,
+          13
+        ],
+        [
+          2,
+          14
+        ]
+      ]
+    },
+    "JJ": {
+      "games_played": 6,
+      "games_won": 4,
+      "game_history": [
+        [
+          0,
+          9
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          0,
+          12
+        ],
+        [
+          3,
+          13
+        ],
+        [
+          1,
+          14
+        ]
+      ]
+    },
+    "RT": {
+      "games_played": 6,
+      "games_won": 2,
+      "game_history": [
+        [
+          0,
+          9
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          1,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          3,
+          13
+        ],
+        [
+          1,
+          14
+        ]
+      ]
+    },
+    "Ted": {
+      "games_played": 2,
+      "games_won": 0,
+      "game_history": [
+        [
+          3,
+          9
+        ],
+        [
+          1,
+          10
         ]
       ]
     }
   },
   "side": {
     "long": {
-      "side_win": 4,
+      "side_win": 7,
       "side_history": [
         1,
         1,
@@ -309,11 +590,17 @@
         0,
         1,
         0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
         0
       ]
     },
     "islands": {
-      "side_win": 4,
+      "side_win": 7,
       "side_history": [
         0,
         0,
@@ -322,12 +609,18 @@
         1,
         0,
         1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
         1
       ]
     }
   },
   "game": {
-    "game": 8
+    "game": 14
   },
   "guns": {
     "blazter": {
@@ -335,6 +628,33 @@
     },
     "NERF N-Strike Elite Rampage": {
       "fps": 9000
+    },
+    "KitchenGun": {
+      "fps": 65
+    },
+    "RailGun": {
+      "fps": 160
+    },
+    "Dre's Big Red": {
+      "fps": 130
+    },
+    "The OG": {
+      "fps": 145
+    },
+    "TomCat": {
+      "fps": 155
+    },
+    "The Siren": {
+      "fps": 140
+    },
+    "Destroyer": {
+      "fps": 70
+    },
+    "MK3": {
+      "fps": 145
+    },
+    "Rui's Gun": {
+      "fps": 146
     },
     "gunslinger": {
       "fps": 30
