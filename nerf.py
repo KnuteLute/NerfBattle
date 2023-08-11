@@ -126,6 +126,102 @@ def give_player_gun(player_gun):
         increment += 2
         
 
+def game_team_history():
+    data = load_data('nerffight.json')
+    played = data['game']['game']
+    if data['game']['match'] == []:
+        for nu in range(played):
+                data['game']['match'].append([nu+1,[],[]])
+
+
+    save_data('nerffight.json', data)
+
+
+def load_team_history():
+    data = load_data('nerffight.json')
+    for match in data['game']['match']:
+        game = match[0]
+        for player in data['players']:
+            for games in data['players'][player]['game_history']:
+                g = games[1]
+                if g == game:
+                    print(player, 'played in game', game)
+                    if games[0] == 0 or games[0] == 1:
+                        match[1].append(player)
+                    else:
+                        match[2].append(player)
+                
+    save_data('nerffight.json', data)
+
+
+def best_cynergy(player):
+    data = load_data('nerffight.json')
+    player_score = []
+    for i in data['players']:
+        player_score.append(0)
+        player_score.append(0)
+
+    for game in data['players'][player]['game_history']:
+        if game == []:
+            return None
+        else:
+            score = game[0]
+            g = game[1]
+           
+            for played_with in data['game']['match']:
+                if played_with[0] == g:
+                    if score == 0 or score == 1:
+                        wp = played_with[1]
+                        lp = played_with[2]
+                    else:
+                        wp = played_with[2]
+                        lp = played_with[1]
+                    
+                    count = 0
+                    for p in data['players']:
+                  
+                        if p == player:
+                            count += 2
+                        else:
+                            if p in wp:
+                                if score == 0 or score == 2:
+                                    player_score[count] += 1
+                                else:
+                                    player_score[count+1] += 1
+                            count += 2
+
+    count = 0
+    players = data['players']
+    data = {
+    'players': players,
+    'results': player_score
+    }
+    
+    player_ratios = {}
+
+    for player, result in zip(data['players'], data['results']):
+        if player_score[count+1] == 0:
+            ratio = player_score[count]  # To avoid division by zero
+        else:
+            ratio = player_score[count] / player_score[count+1]
+        count += 2
+        player_ratios[player] = ratio
+    
+    print(player_ratios)
+    highest_players = []
+    max_ratio = 0
+    for player, ratio in player_ratios.items():
+        if ratio > max_ratio:
+            max_ratio = ratio
+            highest_players = [player]
+        elif ratio == max_ratio:
+            highest_players.append(player)
+
+    print("Players with the highest ratio:", highest_players)
+
+
+
+best_cynergy('KnutKnut')
 
 def reset_data():
     # Load the data
@@ -631,8 +727,7 @@ def update_player_donut_chart(teams, islandclikc, longclick):
         players = data['players'].keys()
         players = list(players)
         player_amount = len(players)
-        print('player amount',player_amount)
-        print((players))
+        
         fig = make_subplots(rows=1, cols=player_amount, subplot_titles=players, specs=[[{'type': 'domain'}]*player_amount])
         for i, player in enumerate(players, start=1):
             wins = data['players'][player]['games_won']
@@ -665,8 +760,6 @@ def update_player_side_donut_chart(teams, islandclikc, longclick):
         players = data['players'].keys()
         players = list(players)
         player_amount = len(players)
-        print('player amount',player_amount)
-        print((players))
         subplot_titles = []
 
         for player in players:
@@ -704,4 +797,4 @@ def update_player_side_donut_chart(teams, islandclikc, longclick):
 
 # Run the application
 if __name__ == '__main__':
-    app.run_server(host='0.0.0.0',debug=True, port=8070)
+    app.run_server(debug=True, port=8072)
