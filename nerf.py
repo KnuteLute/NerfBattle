@@ -704,4 +704,4 @@ def update_player_side_donut_chart(teams, islandclikc, longclick):
 
 # Run the application
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8070)
+    app.run_server(host='0.0.0.0',debug=True, port=8070)
