@@ -76,25 +76,33 @@ def add_team_score(side, team):
     island = team[1]
     data['game']['game'] += 1
     game = data['game']['game']
-
+   
     for player in data['players']:
+        if data['players'][player].get("experience") is None:
+            data['players'][player]['experience'] = 50
         if player in long:  # player is in long
             if side == 0:  # player is in long and long has won
                 data['players'][player]['games_played'] += 1
                 data['players'][player]['games_won'] += 1
                 data['players'][player]['game_history'].append([0, game])
+                data['players'][player]['experience'] += 40
             else:  # player is in long and long lost
                 data['players'][player]['games_played'] += 1
                 data['players'][player]['game_history'].append([1, game])
+                data['players'][player]['experience'] += 10
 
         elif player in island:
             if side == 1:  # player is in island and island won
                 data['players'][player]['games_played'] += 1
                 data['players'][player]['games_won'] += 1
                 data['players'][player]['game_history'].append([2, game])
+                data['players'][player]['experience'] += 40
             else:  # player is in long and long lost
                 data['players'][player]['games_played'] += 1
                 data['players'][player]['game_history'].append([3, game])
+                data['players'][player]['experience'] += 10
+        data['players'][player]['player_level'] = data['players'][player]['experience']//50
+        print(data['players'][player]['experience'] ,data['players'][player]['experience']//50)
 
     save_data('nerffight.json', data)
 
@@ -208,7 +216,7 @@ app.layout = html.Div(
                     dmc.Col(
                         children=[
 
-                        ], span=6,
+                        ], span=9,
                         id='scoreboard'
                     ),
                     dmc.Col(
@@ -216,7 +224,7 @@ app.layout = html.Div(
 
                         ],
                         id='gun_choice',
-                        span=6,
+                        span=3,
                     ),
                     
 
@@ -426,21 +434,53 @@ def display_teams(teams, islandclick, longclick, init_long, init_island):
         time.sleep(0.2)
         data = load_data('nerffight.json')
 
-        # Create a list to hold the scoreboard children
-        children = []
+        # Header for the table
+        header = [
+            html.Thead(
+                html.Tr(
+                    [
+                        html.Th("Player Name"),
+                        html.Th("Number of Wins"),
+                        html.Th("Player Level"),
+                        html.Th("XP Bar")  # Adjust as per your need
+                    ]
+                )
+            )
+        ]
 
-        # Add a header to the scoreboard
-        children.append(html.H2('Scoreboard'))
-
-        # Add player scores to the scoreboard
+        # Rows for player stats
+        rows = []
         for player, player_data in data['players'].items():
-            children.append(html.P(f"{player}: {player_data['games_won']} wins", style={'margin': '1px'}))
+            player_row = html.Tr(
+                [
+                    html.Td(player),
+                    html.Td(str(player_data['games_won'])),
+                    html.Td(str(player_data['player_level'])),  # assuming player_level is in your JSON
+                    dmc.Progress(
+                        value=player_data['experience']%50,
+                        color="green",
+                        striped= True,
+                        animate=True,
+                        size='xl',
+                        radius='md',
+                                    
+                    )
+                ]
+            )
+            rows.append(player_row)
 
-        # Add side scores to the scoreboard
-        for side, side_data in data['side'].items():
-            children.append(html.P(f"{side.capitalize()}: {side_data['side_win']} wins", style={'margin': '1px'}))
+        body = [html.Tbody(rows)]
 
-        return children
+        # Construct table
+        table = dmc.Table(
+            striped=True,
+            highlightOnHover=True,
+            withBorder=True,
+            withColumnBorders=True,
+            children=header + body
+        )
+
+        return table
 
 
 @app.callback(
