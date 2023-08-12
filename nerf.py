@@ -191,7 +191,7 @@ app.layout = html.Div(
                         children=[
                             html.Div(id='teams-display'),
                         ],
-                        span=6,
+                        span=12,
                     ),
                     dmc.Col(
                         children=[
@@ -271,7 +271,14 @@ app.layout = html.Div(
             dcc.Store(id='island-team-win', storage_type='session'),
             dcc.Store(id='long-team-win', storage_type='session'),
         ])
-    ]
+    ],
+    style={
+        "background-color": "lightblue",
+        "margin-left" : "0px",
+        "margin-right" : "0px",
+        "border-left" : "0px",
+        "border-right" : "0px",
+    }
 )
 
 
