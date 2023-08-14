@@ -40,7 +40,9 @@
           0,
           12
         ]
-      ]
+      ],
+      "lvl": 2,
+      "experience": 280
     },
     "KnutKnut": {
       "games_played": 14,
@@ -102,7 +104,9 @@
           2,
           14
         ]
-      ]
+      ],
+      "lvl": 4,
+      "experience": 400
     },
     "Tob": {
       "games_played": 14,
@@ -164,7 +168,9 @@
           1,
           14
         ]
-      ]
+      ],
+      "lvl": 4,
+      "experience": 440
     },
     "Dre": {
       "games_played": 14,
@@ -226,7 +232,9 @@
           1,
           14
         ]
-      ]
+      ],
+      "lvl": 4,
+      "experience": 440
     },
     "Kl\u00f8lla": {
       "games_played": 6,
@@ -256,7 +264,9 @@
           2,
           14
         ]
-      ]
+      ],
+      "lvl": 2,
+      "experience": 200
     },
     "Mr. K": {
       "games_played": 12,
@@ -310,7 +320,9 @@
           2,
           14
         ]
-      ]
+      ],
+      "lvl": 4,
+      "experience": 400
     },
     "Kirurgen": {
       "games_played": 8,
@@ -348,7 +360,9 @@
           1,
           8
         ]
-      ]
+      ],
+      "lvl": 2,
+      "experience": 220
     },
     "TJ": {
       "games_played": 14,
@@ -410,7 +424,9 @@
           2,
           14
         ]
-      ]
+      ],
+      "lvl": 4,
+      "experience": 420
     },
     "Rui": {
       "games_played": 14,
@@ -472,7 +488,9 @@
           1,
           14
         ]
-      ]
+      ],
+      "lvl": 4,
+      "experience": 400
     },
     "Biffen": {
       "games_played": 6,
@@ -502,7 +520,9 @@
           2,
           14
         ]
-      ]
+      ],
+      "lvl": 1,
+      "experience": 160
     },
     "JJ": {
       "games_played": 6,
@@ -532,7 +552,9 @@
           1,
           14
         ]
-      ]
+      ],
+      "lvl": 2,
+      "experience": 200
     },
     "RT": {
       "games_played": 6,
@@ -562,7 +584,9 @@
           1,
           14
         ]
-      ]
+      ],
+      "lvl": 1,
+      "experience": 160
     },
     "Ted": {
       "games_played": 2,
@@ -576,7 +600,9 @@
           1,
           10
         ]
-      ]
+      ],
+      "lvl": 0,
+      "experience": 40
     }
   },
   "side": {

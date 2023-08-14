@@ -101,7 +101,7 @@ def add_team_score(side, team):
                 data['players'][player]['games_played'] += 1
                 data['players'][player]['game_history'].append([3, game])
                 data['players'][player]['experience'] += 10
-        data['players'][player]['player_level'] = data['players'][player]['experience']//50
+        data['players'][player]['lvl'] = data['players'][player]['experience']//50
         print(data['players'][player]['experience'] ,data['players'][player]['experience']//50)
 
     save_data('nerffight.json', data)
@@ -115,6 +115,24 @@ def load_guns():
 
     return guns
 
+
+def give_lvl():
+    data = load_data('nerffight.json')
+    for player in data['players']:
+        # Calculate the level and experience based on your logic
+        games_played = data['players'][player]['games_played']
+        games_won = data['players'][player]['games_won']
+        
+        # Example logic to calculate level and experience
+        experience = games_won * 40 + (games_played-games_won) * 20  # Remaining points are experience
+        lvl = experience // 100
+
+        # Add the "lvl" and "experience" attributes to the player
+        data['players'][player]['lvl'] = lvl
+        data['players'][player]['experience'] = experience
+        save_data('nerffight.json', data)
+
+give_lvl()
 
 def give_player_gun(player_gun):
     # player_gun is a list where everyother element is either a player or a gun. # ex: [player, gun, player, gun]
@@ -455,15 +473,14 @@ def display_teams(teams, islandclick, longclick, init_long, init_island):
                 [
                     html.Td(player),
                     html.Td(str(player_data['games_won'])),
-                    html.Td(str(player_data['player_level'])),  # assuming player_level is in your JSON
+                    html.Td(str(player_data['lvl'])),  # assuming player_level is in your JSON
                     dmc.Progress(
                         value=player_data['experience']%50,
                         color="green",
                         striped= True,
                         animate=True,
                         size='xl',
-                        radius='md',
-                                    
+                        radius='md',           
                     )
                 ]
             )
