@@ -132,7 +132,6 @@ def give_lvl():
         data['players'][player]['experience'] = experience
         save_data('nerffight.json', data)
 
-give_lvl()
 
 def give_player_gun(player_gun):
     # player_gun is a list where everyother element is either a player or a gun. # ex: [player, gun, player, gun]
