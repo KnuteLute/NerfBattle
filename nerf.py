@@ -102,7 +102,7 @@ def add_team_score(side, team):
                 data['players'][player]['game_history'].append([3, game])
                 data['players'][player]['experience'] += 10
         data['players'][player]['lvl'] = data['players'][player]['experience']//50
-        print(data['players'][player]['experience'] ,data['players'][player]['experience']//50)
+        #print(data['players'][player]['experience'] ,data['players'][player]['experience']//50)
 
     save_data('nerffight.json', data)
 
@@ -170,7 +170,7 @@ def load_team_history():
             for games in data['players'][player]['game_history']:
                 g = games[1]
                 if g == game:
-                    print(player, 'played in game', game)
+                    #print(player, 'played in game', game)
                     if games[0] == 0 or games[0] == 1:
                         match[1].append(player)
                     else:
@@ -392,7 +392,14 @@ app.layout = html.Div(
             dcc.Store(id='island-team-win', storage_type='session'),
             dcc.Store(id='long-team-win', storage_type='session'),
         ])
-    ]
+    ],
+    style={
+        "background-color": "lightblue",
+        "margin-left" : "0px",
+        "margin-right" : "0px",
+        "border-left" : "0px",
+        "border-right" : "0px",
+    }
 )
 
 
