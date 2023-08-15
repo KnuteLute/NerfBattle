@@ -232,7 +232,7 @@ def best_cynergy(player):
         count += 2
         player_ratios[player] = ratio
     
-    print(player_ratios)
+    #print(player_ratios)
     highest_players = []
     max_ratio = 0
     for player, ratio in player_ratios.items():
@@ -242,11 +242,11 @@ def best_cynergy(player):
         elif ratio == max_ratio:
             highest_players.append(player)
 
-    print("Players with the highest ratio:", highest_players)
+    #print("Players with the highest ratio:", highest_players)
+    return highest_players
 
 
 
-best_cynergy('KnutKnut')
 
 def reset_data():
     # Load the data
@@ -555,6 +555,7 @@ def display_teams(teams, islandclick, longclick, init_long, init_island):
                         html.Th("Player Name"),
                         html.Th("Number of Wins"),
                         html.Th("Player Level"),
+                        html.Th("Cynergy"),
                         html.Th("XP Bar")  # Adjust as per your need
                     ]
                 )
@@ -569,6 +570,7 @@ def display_teams(teams, islandclick, longclick, init_long, init_island):
                     html.Td(player),
                     html.Td(str(player_data['games_won'])),
                     html.Td(str(player_data['lvl'])),  # assuming player_level is in your JSON
+                    html.Td(str(best_cynergy(player))),
                     dmc.Progress(
                         value=player_data['experience']%50,
                         color="green",
@@ -853,4 +855,4 @@ def update_player_side_donut_chart(teams, islandclikc, longclick):
 
 # Run the application
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8070)
+    app.run_server(debug=True, port=8071)
